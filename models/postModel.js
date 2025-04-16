@@ -1,20 +1,23 @@
 
-import mongoose from 'mongoose';
-const commentSchema = new mongoose.Schema({
-    userId: String,
-    text: String,
-  }, { timestamps: true });
+import mongoose,{Schema} from 'mongoose';
+import userModel from './userModel.js';
 
 
 const postSchema = new mongoose.Schema({
-    userId: String,
-    caption: String,
-    fileUrl: String,
-    type: String, // 'image' or 'video'
-    likes: [String],
-    dislikes: [String],
-    comments: [commentSchema],
-  }, { timestamps: true });
+  userId: {
+     type: Schema.Types.ObjectId,
+     ref:"userModel",
+     required: true,
+
+    },
+  caption: {type: String, required : true},
+  media :{type:String, required : true}, 
+  likes: [],
+  comments: [],
+  },{
+  timestamps: true,  
+});
+const Post = userModel.discriminator('Post', postSchema)
   
 
-export default mongoose.model('Post', postSchema);
+export default Post;

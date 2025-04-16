@@ -31,7 +31,7 @@ connectionDB()
 
 app .get('/', (req, res) => res.send("API working!")) 
 app.use('/api/user', authRouter)
-app.use('/api/user', userRouter)
+app.use('/api/prof', userRouter)
 app.use('/api/posts', postRouter)
 
 app.listen(PORT, () => {

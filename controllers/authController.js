@@ -3,17 +3,17 @@ import userModel from '../models/userModel.js';
 import jwt from 'jsonwebtoken';
 // import transporter from '../config/nodemailer.js';
 
-// generate auth token
-const generateToken = (userId) => {
-    return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "24h" });
-  };
+
   
 export const register = async (req, res) => {
     const {name, email, password} = req.body;
-
     if(!name || !email || !password){
-      return res.status(400).json({success: false, message:"Missing details"})  
-    }
+        return res.status(400).json({success: false, message:"Missing details"})  
+      }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new userModel({name, email, password:hashedPassword});
+
+    
     try{
 
         const existingUser = await userModel.findOne({email})
@@ -23,15 +23,16 @@ export const register = async (req, res) => {
         }
 
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new userModel({name, email, password:hashedPassword});
-        await user.save();
+       
+        const user = await newUser.save();
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "24h" });
+    
 
        
-        res.json({ message: "registration successful", user: { id: user._id, name: user.name, email: user.email } });
+        res.status(200).json({ message: "registration successful", user: { id: user._id, name: user.name, email: user.email } ,token});
 
     }catch (error) {
-        res.json({success: false, message: error.message})
+        res.status(500).json({success: false, message: error.message})
     }
 
 }
@@ -50,8 +51,8 @@ export const login = async (req, res) => {
          if (!isMatch){
             return res.status(400).json({sucess:false, message:"wrong password"});
          }
-         const token = generateToken(user._id);
-         res,json({
+         const token  = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "24h" });
+         res.json({
             success: true,
             message:"Login successful",
             token,
@@ -60,7 +61,7 @@ export const login = async (req, res) => {
          
 
     } catch (error) {
-        res.json({success: false, message: error.message});
+        res.status(500).json({success: false, message: error.message});
     }
 
 

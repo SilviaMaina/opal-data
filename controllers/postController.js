@@ -1,31 +1,17 @@
-// --- controllers/postController.js ---
+
 import cloudinary from '../config/cloudinary.js';
-import postModel from '../models/postModel.js';
+import Post from '../models/postModel.js';
+import userModel from '../models/userModel.js';
 
 // Create a post
 export const createPost = async (req, res) => {
   try {
-    const { caption, userId, file } = req.body;
+    const { caption } = req.body;
 
-    if (!file) {
-      return res.status(400).json({ success: false, message: 'No file uploaded' });
-    }
-
-    // Upload file to Cloudinary
-    const uploadedResponse = await cloudinary.uploader.upload(file, {
-      resource_type: 'auto', // Auto-detect image/video
-    });
-
-    const fileType = uploadedResponse.resource_type;
-
-    // Save post to the database
-    const newPost = new postModel({
-      userId,
-      type: fileType,
-      fileUrl: uploadedResponse.secure_url,
+    
+    const newPost = new Post({
       caption,
       likes: [],
-      dislikes: [],
       comments: [],
     });
 

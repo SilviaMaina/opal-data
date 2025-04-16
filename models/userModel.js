@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  name: {type:String, required:true, unique:true}, 
+  name: {type:String, required:true, }, 
   email: {type:String, required:true, unique:true},
   password: {type:String, required:true, },
   avatar:{type:String, default:"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"},
@@ -16,11 +16,7 @@ following: [{
         ref: "user",
     },
 ],
-saved: [{
-      type: mongoose.Types.ObjectId,
-      ref: 'post'
-  }
-],
+
 story: {
   type: String,
   default: "",

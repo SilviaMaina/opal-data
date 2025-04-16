@@ -1,13 +1,14 @@
 // routes/userRoutes.js
 import express from 'express';
-import { getUserProfile, uploadAvatar, followUnfollow, editUserProfile } from '../controllers/userController.js';
+import { getUserProfile, uploadAvatar, follow,unfollow, editUserProfile } from '../controllers/userController.js';
 
 const userRouter = express.Router();
 
-userRouter.get('/profile/:userId', getUserProfile);
-userRouter.put('/avatar', uploadAvatar);
-userRouter.put('/follow', followUnfollow);
-userRouter.put('/edit-profile', editUserProfile);
+userRouter.get('/profile/:id', getUserProfile);
+userRouter.patch('/avatar', uploadAvatar);
+userRouter.patch('/follow/:id', follow);
+userRouter.patch('/unfollow/:id', unfollow);
+userRouter.patch('/edit-profile/:id', editUserProfile);
 
 export default userRouter;
 
